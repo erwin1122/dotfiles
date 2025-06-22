@@ -12,7 +12,10 @@ alias lg='lazygit'
 # Prompt
 PS1='[\u@\h \W]\$ '
 
-# cd on quit for nnn
+# Variable exports
+export NNN_OPTS="dH"
+
+# Wrapper for nnn
 n() {
   # Block nesting of nnn in subshells
   [ "${NNNLVL:-0}" -eq 0 ] || {
