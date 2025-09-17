@@ -99,20 +99,34 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
 -- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
 --  See `:help wincmd` for a list of all window commands
+--  Use CTRL+<hjkl> to switch between windows
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Keybinds for easier window navigation.
+vim.keymap.set('n', '<leader>wr', '<C-w>r', { desc = 'Rotate windows downwards/rightwards' })
+vim.keymap.set('n', '<leader>wR', '<C-w>R', { desc = 'Rotate windows upwards/leftwards' })
+vim.keymap.set('n', '<leader>wq', '<C-w>q', { desc = 'Quit the window' })
+vim.keymap.set('n', '<leader>wv', '<C-w>v', { desc = 'Split window vertically' })
+vim.keymap.set('n', '<leader>ws', '<C-w>s', { desc = 'Split window horizontally' })
+vim.keymap.set('n', '<leader>ww', 'gt', { desc = 'Switch tab forward' })
+vim.keymap.set('n', '<leader>wW', 'gT', { desc = 'Switch tab backward' })
+
+vim.keymap.set('n', '<leader>wT', '<C-w>T', { desc = 'Move the current window to a new tab page' })
+vim.keymap.set('n', '<leader>wH', '<C-w>H', { desc = 'Move window to the left' })
+vim.keymap.set('n', '<leader>wJ', '<C-w>J', { desc = 'Move window to the bottom' })
+vim.keymap.set('n', '<leader>wK', '<C-w>K', { desc = 'Move window to the top' })
+vim.keymap.set('n', '<leader>wL', '<C-w>L', { desc = 'Move window to the right' })
+
+-- todo: nochmal prüfen
+vim.keymap.set('n', '<leader>wu', '<C-w>L', { desc = 'Decrease width' })
+vim.keymap.set('n', '<leader>wi', '<C-w>L', { desc = 'Increase width' })
+vim.keymap.set('n', '<leader>wo', '<C-w>L', { desc = 'Decrease height' })
+vim.keymap.set('n', '<leader>wp', '<C-w>L', { desc = 'Increase height' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -120,8 +134,8 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
+-- Basic Autocommands
+-- See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -270,6 +284,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
+        { '<leader>w', group = '[W]indow navigation' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
@@ -853,7 +868,24 @@ require('lazy').setup({
 
         -- Custom Highlights --
         colors = {}, -- Override default colors
-        highlights = {}, -- Override highlight groups
+
+        --[[
+        highlights = {
+          -- LSP Syntaxfarben überschreiben
+          ['@function'] = { fg = '#82aaff' }, -- schönes kühles Blau
+          ['@variable'] = { fg = '#c8d3f5' }, -- helles Blau-Grau
+          ['@keyword'] = { fg = '#86e1fc' }, -- cyan-blau
+          ['@string'] = { fg = '#a6accd' }, -- blasses Lila-Grau statt grelles Grün
+          ['@constant'] = { fg = '#65bcff' }, -- blau
+          ['@type'] = { fg = '#7fdbca' }, -- türkisblau
+
+          -- Optional: LSP diagnostic colors
+          DiagnosticError = { fg = '#ff5370' }, -- rot bleibt rot
+          DiagnosticWarn = { fg = '#ffc777' }, -- ein sanfteres Gelb
+          DiagnosticInfo = { fg = '#82aaff' }, -- gleich wie Funktion
+          DiagnosticHint = { fg = '#7fdbca' }, -- türkis
+        },
+        ]]
 
         -- Plugins Config --
         diagnostics = {
@@ -867,9 +899,6 @@ require('lazy').setup({
       require('onedark').load()
     end,
   },
-
-  -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -947,7 +976,7 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
