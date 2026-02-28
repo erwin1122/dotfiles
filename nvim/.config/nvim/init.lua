@@ -1,16 +1,28 @@
--- Set <space> as the leader key
+--[[===============================================
+=                                .-----.          =
+=     .----------------------.   | === |          =
+=     |.-""""""""""""""""""-.|   |-----|          =
+=     ||                    ||   | === |          =
+=     ||   KICKSTART.NVIM   ||   |-----|          =
+=     ||                    ||   | === |          =
+=     ||                    ||   |-----|          =
+=     ||:Tutor              ||   |:::::|          =
+=     |'-..................-'|   |____o|          =
+=     `"")----------------(""`   ___________      =
+=    /::::::::::|  |::::::::::\  \ no mouse \     =
+=   /:::========|  |==hjkl==:::\  \ required \    =
+=  '""""""""""""'  '""""""""""""'  '""""""""""'   =
+===============================================--]]
+
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
--- [[ Setting options ]]
--- See `:help vim.o`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
+-- Options: For more, you can see `:help option-list`
 
 -- Make line numbers default
 vim.o.number = true
@@ -33,6 +45,13 @@ end)
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Use space instead of tabs
+vim.opt.expandtab = true
+-- Count of spaces for one tab
+vim.opt.tabstop = 4
+-- Count of spaces for indent
+vim.opt.shiftwidth = 2
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -52,6 +71,18 @@ vim.o.timeoutlen = 300
 -- Configure how new splits should be opened
 vim.o.splitright = true
 vim.o.splitbelow = true
+
+-- Folding:
+-- Set the fill characters for folds
+vim.opt.fillchars = { fold = ' ' }
+-- Set the fold method to indent
+vim.opt.foldmethod = 'indent'
+-- Disable folding by default
+vim.opt.foldenable = false
+-- Set the fold level to 99 (show all folds)
+vim.opt.foldlevel = 99
+-- Enable folding for Markdown files
+vim.g.markdown_folding = 1
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -98,6 +129,20 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- Stay on the same position, when appending the line from below
+vim.keymap.set('n', 'J', 'mzJ`z')
+
+-- Center cursor, after half page scrolling
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+
+-- Map Ctrl+C to Escape
+vim.keymap.set('i', '<C-c>', '<Esc>')
+
+-- Move selected lines up and down
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
 -- Keybinds to make split navigation easier.
 --  See `:help wincmd` for a list of all window commands
@@ -224,6 +269,12 @@ require('lazy').setup({
     },
   },
 
+  {
+    'nvzone/typr',
+    dependencies = 'nvzone/volt',
+    opts = {},
+    cmd = { 'Typr', 'TyprStats' },
+  },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -397,9 +448,9 @@ require('lazy').setup({
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+      vim.keymap.set('n', '<leader>sc', function()
+        builtin.find_files { cwd = '~/dotfiles' }
+      end, { desc = '[S]earch [C]onfig' })
     end,
   },
 
@@ -715,6 +766,51 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
+    },
+  },
+
+  {
+    'epwalsh/obsidian.nvim',
+    version = '*', -- recommended, use latest release instead of latest commit
+    lazy = false,
+    ft = 'markdown',
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+    --   -- refer to `:h file-pattern` for more examples
+    --   "BufReadPre path/to/my-vault/*.md",
+    --   "BufNewFile path/to/my-vault/*.md",
+    -- },
+    dependencies = {
+      -- Required.
+      'nvim-lua/plenary.nvim',
+
+      -- see below for full list of optional dependencies 👇
+    },
+    opts = {
+      workspaces = {
+        {
+          name = 'denkarium',
+          path = '~/denkarium',
+        },
+      },
+
+      -- see below for full list of options 👇
+    },
+  },
+
+  {
+    'jiaoshijie/undotree',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    ---@module 'undotree.collector'
+    ---@type UndoTreeCollector.Opts
+    opts = {
+      position = 'right',
+      -- your options
+    },
+    keys = { -- load the plugin only when using it's keybinding:
+      { '<leader>u', "<cmd>lua require('undotree').toggle()<cr>" },
     },
   },
 
