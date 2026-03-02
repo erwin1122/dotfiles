@@ -14,6 +14,9 @@ PS1='[\u@\h \W]\$ '
 
 # Variable exports
 export NNN_OPTS="dH"
+export NNN_OPENER="nvim"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
 # Wrapper for nnn
 n() {
@@ -38,7 +41,7 @@ n() {
 
   # The command builtin allows one to alias nnn to n, if desired, without
   # making an infinitely recursive alias
-  command nnn "$@"
+  command nnn -e "$@"
 
   [ ! -f "$NNN_TMPFILE" ] || {
     . "$NNN_TMPFILE"
