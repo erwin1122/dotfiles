@@ -12,6 +12,11 @@ alias lg='lazygit'
 # Prompt
 PS1='[\u@\h \W]\$ '
 
+# tmux autostart: nur wenn nicht schon in tmux und echtes TTY
+if [ -z "$TMUX" ] && [ -t 1 ]; then
+  tmux attach || tmux new-session || true
+fi
+
 # Variable exports
 export NNN_OPTS="dH"
 export NNN_OPENER="nvim"
