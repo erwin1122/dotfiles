@@ -48,3 +48,12 @@ n() {
     rm -f -- "$NNN_TMPFILE" >/dev/null
   }
 }
+
+# Use the windows git installation, if in c mount. Otherwise git operations will be very slow
+function git() {
+  if $(pwd -P | grep -q "^\/mnt\/c\/*"); then
+    git.exe "$@"
+  else
+    command git "$@"
+  fi
+}
