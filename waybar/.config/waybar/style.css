@@ -1,5 +1,14 @@
 @import "../omarchy/current/theme/waybar.css";
 
+window#waybar {
+  background-color: transparent;
+}
+
+window#waybar > box {
+  background-color: @background;
+  border-radius: 9px;
+}
+
 * {
   background-color: @background;
   color: @foreground;
@@ -7,8 +16,8 @@
   border: none;
   border-radius: 0;
   min-height: 0;
-  font-family: 'JetBrainsMono Nerd Font';
-  font-size: 12px;
+  font-family: 'JetBrainsMonoNL Nerd Font Mono';
+  font-size: 15px;
 }
 
 .modules-left {
@@ -39,6 +48,14 @@
   margin: 0 7.5px;
 }
 
+#bluetooth,
+#network,
+#pulseaudio,
+#cpu,
+#battery {
+  font-size: 22px;
+}
+
 #tray {
   margin-right: 16px;
 }
@@ -65,6 +82,7 @@ tooltip {
 
 #clock {
   margin-left: 8.75px;
+  margin-right: 10px;
 }
 
 .hidden {
