@@ -3,6 +3,11 @@
 # Only in interactive shells
 [[ $- != *i* ]] && return
 
+# Launch fish as interactive shell if available
+if command -v fish &>/dev/null; then
+  exec fish
+fi
+
 # Aliases
 alias ls='ls -a --color=auto'
 alias ll='ls -l -a --color=auto'
