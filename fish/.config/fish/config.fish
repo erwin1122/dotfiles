@@ -15,13 +15,18 @@ alias ls 'ls -a --color=auto'
 alias ll 'ls -l -a --color=auto'
 alias grep 'grep --color=auto'
 alias lg 'lazygit'
+alias cl 'clear'
 
 # tmux autostart: nur wenn nicht schon in tmux und echtes Terminal
 if not set -q TMUX; and isatty stdout
-    # Bestehende Session anhängen, sonst neue erstellen
-    if tmux list-sessions &>/dev/null
+    if tmux list-sessions 2>/dev/null | grep -q '(attached)'
+        # An attached session exists – open a new one
+        exec tmux new-session
+    else if tmux list-sessions &>/dev/null
+        # Sessions exist but none attached – attach to one
         exec tmux attach-session
     else
+        # No sessions at all – create new
         exec tmux new-session
     end
 end
