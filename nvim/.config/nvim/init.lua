@@ -467,7 +467,7 @@ require('lazy').setup({
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sc', function()
-        builtin.find_files { cwd = '~/dotfiles' }
+        builtin.find_files { cwd = '~/dotfiles', hidden = true, no_ignore = false, file_ignore_patterns = { '%.git/' } }
       end, { desc = '[S]earch [C]onfig' })
     end,
   },
