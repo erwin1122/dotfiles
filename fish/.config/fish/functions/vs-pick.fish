@@ -8,7 +8,7 @@ function vs-pick --description "Navigate to an open Visual Studio project (WSL2 
 
     set -l win_ps (wslpath -w $ps_script)
     # Redirect stdin to /dev/null so powershell.exe doesn't consume it
-    set -l lines (powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File $win_ps </dev/null 2>/dev/null \
+    set -l lines (/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File $win_ps </dev/null 2>/dev/null \
         | string trim --right --chars "\r")
 
     if test (count $lines) -eq 0
