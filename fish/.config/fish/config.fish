@@ -68,3 +68,6 @@ function git
         command git $argv
     end
 end
+
+# opencode
+fish_add_path /home/arch/.opencode/bin
