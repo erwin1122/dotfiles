@@ -13,6 +13,8 @@ return {
   { import = 'plugins.undotree.undotree' },
   { import = 'plugins.oil.oil' },
   { import = 'plugins.blink-cmp.blink-cmp' },
+  { import = 'plugins.obsidian.obsidian' },
+  { import = 'plugins.opencode.opencode' },
   { import = 'plugins.onedark.onedark' },
   { import = 'plugins.mini.mini' },
   { import = 'plugins.nvim-treesitter.nvim-treesitter' },
