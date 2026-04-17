@@ -24,7 +24,7 @@ return {
       daily_notes = {
         folder = '01_daily/2026',
         date_format = '%d_%m_%Y',
-        default_tags = { 'daily-notes' },
+        default_tags = {},
         template = 'daily_template',
       },
       templates = {
@@ -42,13 +42,15 @@ return {
       sort_reversed = true,
       open_notes_in = 'current',
       completion = {
-        nvim_cmp = false,
+        nvim_cmp = true,
         min_chars = 2,
       },
+      disable_frontmatter = true,
     },
     keys = {
       { '<leader>oo', '<cmd>ObsidianQuickSwitch<CR>', desc = 'Obsidian: Quick switch' },
       { '<leader>on', '<cmd>ObsidianNew<CR>', desc = 'Obsidian: New note' },
+      { '<leader>os', '<cmd>ObsidianQuickSwitch<CR>', desc = 'Obsidian: Search notes' },
       { '<leader>oS', '<cmd>ObsidianSearch<CR>', desc = 'Obsidian: Search content' },
       { '<leader>ot', '<cmd>ObsidianToday<CR>', desc = 'Obsidian: Today' },
       { '<leader>ob', '<cmd>ObsidianBacklinks<CR>', desc = 'Obsidian: Backlinks' },
