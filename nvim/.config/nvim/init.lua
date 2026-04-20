@@ -70,10 +70,18 @@ vim.keymap.set('n', '<leader>wH', '<C-w>H', { desc = 'Move window to the left' }
 vim.keymap.set('n', '<leader>wJ', '<C-w>J', { desc = 'Move window to the bottom' })
 vim.keymap.set('n', '<leader>wK', '<C-w>K', { desc = 'Move window to the top' })
 vim.keymap.set('n', '<leader>wL', '<C-w>L', { desc = 'Move window to the right' })
-vim.keymap.set('n', '<leader>wu', '<C-w>L', { desc = 'Decrease width' })
-vim.keymap.set('n', '<leader>wi', '<C-w>L', { desc = 'Increase width' })
-vim.keymap.set('n', '<leader>wo', '<C-w>L', { desc = 'Decrease height' })
-vim.keymap.set('n', '<leader>wp', '<C-w>L', { desc = 'Increase height' })
+vim.keymap.set('n', '<leader>wu', '<C-w><', { desc = 'Decrease width' })
+vim.keymap.set('n', '<leader>wi', '<C-w>>', { desc = 'Increase width' })
+vim.keymap.set('n', '<leader>wo', '<C-w>-', { desc = 'Decrease height' })
+vim.keymap.set('n', '<leader>wp', '<C-w>+', { desc = 'Increase height' })
+vim.keymap.set('n', '<leader>wO', '<C-w>o', { desc = 'Close other windows' })
+vim.keymap.set('n', '<leader>w=', '<C-w>=', { desc = 'Equalize window sizes' })
+vim.keymap.set('n', '<leader>wm', '<C-w>|', { desc = 'Maximize window width' })
+vim.keymap.set('n', '<leader>wM', '<C-w>_', { desc = 'Maximize window height' })
+vim.keymap.set('n', '<leader>wx', '<C-w>x', { desc = 'Exchange windows' })
+vim.keymap.set('n', '<leader>wt', '<C-w>t', { desc = 'Go to top-left window' })
+vim.keymap.set('n', '<leader>wb', '<C-w>b', { desc = 'Go to bottom-right window' })
+vim.keymap.set('n', '<leader>wn', '<C-w>n', { desc = 'Create new window' })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
