@@ -3,9 +3,24 @@ return {
     'folke/which-key.nvim',
     event = 'VimEnter',
     opts = {
+      preset = 'helix',
       delay = 0,
+      filter = function(mapping)
+        local lhs = (mapping.lhs or ''):lower()
+        return lhs ~= '<c-d>' and lhs ~= '<c-u>'
+      end,
       win = {
-        height = { min = 10, max = 35 },
+        row = math.huge,
+        col = 0,
+        height = { min = 4, max = 0.75 },
+      },
+      layout = {
+        spacing = 1,
+        width = { min = 28, max = 40 },
+      },
+      keys = {
+        scroll_down = '<c-d>',
+        scroll_up = '<c-u>',
       },
       icons = {
         mappings = vim.g.have_nerd_font,
