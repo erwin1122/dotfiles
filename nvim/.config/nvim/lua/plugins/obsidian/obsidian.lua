@@ -46,11 +46,17 @@ return {
         min_chars = 2,
       },
       mappings = {
+        ['gf'] = {
+          action = function()
+            return require('obsidian').util.gf_passthrough()
+          end,
+          opts = { noremap = false, expr = true, buffer = true },
+        },
         ['<leader>ox'] = {
           action = function()
             return require('obsidian').util.toggle_checkbox()
           end,
-          opts = { buffer = true, desc = 'Obsidian: Toggle checkbox' },
+          opts = { buffer = true, desc = 'Obsidian: Toggle checkbox state' },
         },
       },
       disable_frontmatter = true,
@@ -69,7 +75,7 @@ return {
       { '<leader>or', '<cmd>ObsidianRename --dry-run<CR>', desc = 'Obsidian: Rename (dry run)' },
       { '<leader>oR', '<cmd>ObsidianRename<CR>', desc = 'Obsidian: Rename note' },
       { '<leader>oT', '<cmd>ObsidianTemplate<CR>', desc = 'Obsidian: Insert template' },
-      { '<leader>oc', '<cmd>ObsidianToggleCheckbox<CR>', desc = 'Obsidian: Toggle checkbox' },
+      { '<leader>oc', '<cmd>ObsidianToggleCheckbox<CR>', desc = 'Obsidian: Cycle checkbox state' },
       { '<leader>oO', '<cmd>ObsidianOpen<CR>', desc = 'Obsidian: Open in app' },
       { '<leader>oW', '<cmd>ObsidianWorkspace<CR>', desc = 'Obsidian: Switch workspace' },
       { '<leader>o#', '<cmd>ObsidianTags<CR>', desc = 'Obsidian: Find tags' },
