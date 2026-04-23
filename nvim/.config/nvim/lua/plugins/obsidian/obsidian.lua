@@ -9,7 +9,7 @@ return {
     },
     opts = {
       ui = {
-        --enable = false,
+        enable = false,
         update_debounce = 200,
         max_file_length = 5000,
       },

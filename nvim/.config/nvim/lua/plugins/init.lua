@@ -20,4 +20,5 @@ return {
   { import = 'plugins.mini.mini' },
   { import = 'plugins.nvim-treesitter.nvim-treesitter' },
   { import = 'plugins.indent-blankline.indent-blankline' },
+  { import = 'plugins.render-markdown.render-markdown' },
 }
