@@ -26,7 +26,7 @@ vim.o.timeoutlen = 300
 vim.o.splitright = true
 vim.o.splitbelow = true
 
-vim.opt.conceallevel = 1
+vim.opt.conceallevel = 2
 vim.opt.concealcursor = 'nc'
 
 vim.opt.fillchars = { fold = ' ' }
@@ -41,6 +41,11 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 vim.o.scrolloff = 10
 vim.o.confirm = true
+
+-- '.' in path means: when searching for files (e.g. via 'gf'),
+-- also look relative to the directory of the currently open file.
+-- This allows navigating to relative paths like './other-file.md'.
+vim.opt.path:append('.')
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
