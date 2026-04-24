@@ -21,7 +21,9 @@ return {
         lualine = {
           transparent = false,
         },
-        colors = {},
+        colors = {
+          green = '#00916C',
+        },
         diagnostics = {
           darker = true,
           undercurl = true,
