@@ -45,6 +45,108 @@ vim.o.confirm = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+local function change_cwd(path)
+  if not path or path == '' then
+    return
+  end
+  vim.cmd.cd(vim.fn.fnameescape(path))
+  vim.notify('CWD: ' .. vim.fn.getcwd())
+end
+
+local cwd_history = { vim.fn.getcwd() }
+
+local function push_cwd()
+  local current = vim.fn.getcwd()
+  local last = cwd_history[#cwd_history]
+  if current ~= last then
+    table.insert(cwd_history, current)
+  end
+end
+
+local function pop_cwd()
+  if #cwd_history <= 1 then
+    vim.notify('No previous directory in history', vim.log.levels.WARN)
+    return
+  end
+  table.remove(cwd_history)
+  change_cwd(cwd_history[#cwd_history])
+end
+
+vim.keymap.set('n', '<leader>dc', function()
+  push_cwd()
+  local buf_name = vim.api.nvim_buf_get_name(0)
+  local buf_dir = vim.fn.fnamemodify(buf_name, ':p:h')
+  if buf_dir == '' then
+    vim.notify('No file path in current buffer', vim.log.levels.WARN)
+    return
+  end
+  change_cwd(buf_dir)
+end, { desc = '[D]irectory: [C]hange from buffer' })
+
+vim.keymap.set('n', '<leader>dr', function()
+  push_cwd()
+  local root = vim.fs.root(0, { '.git' })
+  if not root then
+    vim.notify('No git root found from current buffer', vim.log.levels.WARN)
+    return
+  end
+  change_cwd(root)
+end, { desc = '[D]irectory: Change to project [R]oot' })
+
+vim.keymap.set('n', '<leader>dp', function()
+  vim.notify('CWD: ' .. vim.fn.getcwd())
+end, { desc = '[D]irectory: [P]rint current path' })
+
+vim.keymap.set('n', '<leader>df', function()
+  local ok, builtin = pcall(require, 'telescope.builtin')
+  if not ok then
+    vim.notify('Telescope not available', vim.log.levels.WARN)
+    return
+  end
+
+  builtin.find_files {
+    prompt_title = 'Pick file to set CWD',
+    hidden = true,
+    no_ignore = true,
+    attach_mappings = function(prompt_bufnr)
+      local actions = require 'telescope.actions'
+      local action_state = require 'telescope.actions.state'
+
+      local function set_from_selection()
+        local entry = action_state.get_selected_entry()
+        if not entry then
+          return
+        end
+        actions.close(prompt_bufnr)
+        local file = entry.path or entry.filename or entry[1]
+        local dir = vim.fn.fnamemodify(file, ':p:h')
+        push_cwd()
+        change_cwd(dir)
+      end
+
+      actions.select_default:replace(set_from_selection)
+      return true
+    end,
+  }
+end, { desc = '[D]irectory: Change from [F]ile picker' })
+
+vim.keymap.set('n', '<leader>dh', function()
+  push_cwd()
+  change_cwd(vim.fn.expand '~')
+end, { desc = '[D]irectory: Change to [H]ome' })
+
+vim.keymap.set('n', '<leader>dd', function()
+  push_cwd()
+  change_cwd(vim.fn.expand '~/dotfiles')
+end, { desc = '[D]irectory: Change to [D]otfiles' })
+
+vim.keymap.set('n', '<leader>do', function()
+  push_cwd()
+  change_cwd(vim.fn.expand '~/denkarium')
+end, { desc = '[D]irectory: Change to [O]bsidian (denkarium)' })
+
+vim.keymap.set('n', '<leader>db', pop_cwd, { desc = '[D]irectory: [B]ack to previous' })
+
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 vim.keymap.set('n', 'J', 'mzJ`z')
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
@@ -137,6 +239,7 @@ vim.api.nvim_create_autocmd('User', {
     wk.add {
       { '<leader>w', group = '[W]indow navigation' },
       { '<leader>s', group = '[S]earch' },
+      { '<leader>d', group = '[D]irectory' },
       { '<leader>t', group = '[T]oggle' },
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       { '<leader>o', group = 'Obsidian' },
