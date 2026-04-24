@@ -24,7 +24,7 @@ return {
       ]]
     end,
     keys = {
-      { '<leader>ov', '<cmd>MarkdownPreviewToggle<CR>', desc = 'View in Browser' },
+      { '<leader>ov', '<cmd>MarkdownPreview<CR>', desc = 'View in Browser' },
     },
   },
 }
