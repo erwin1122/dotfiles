@@ -1,3 +1,61 @@
+local function git_sync_vault()
+  local vault = vim.fn.expand '~/denkarium'
+
+  local function run_git(args)
+    local cmd = { 'git', '-C', vault }
+    vim.list_extend(cmd, args)
+    local result = vim.system(cmd, { text = true }):wait()
+    local output = ((result.stdout or '') .. (result.stderr or '')):gsub('%s+$', '')
+    return result.code, output
+  end
+
+  local code = run_git { 'rev-parse', '--is-inside-work-tree' }
+  if code ~= 0 then
+    vim.notify('Obsidian vault is not a git repository: ' .. vault, vim.log.levels.ERROR)
+    return
+  end
+
+  local has_changes = false
+  code, output = run_git { 'status', '--porcelain' }
+  if code ~= 0 then
+    vim.notify('Git sync failed while checking status:\n' .. output, vim.log.levels.ERROR)
+    return
+  end
+  if output ~= '' then
+    has_changes = true
+    code, output = run_git { 'add', '-A' }
+    if code ~= 0 then
+      vim.notify('Git sync failed while staging changes:\n' .. output, vim.log.levels.ERROR)
+      return
+    end
+
+    local msg = 'Vault sync ' .. os.date('%Y-%m-%d %H:%M')
+    code, output = run_git { 'commit', '-m', msg }
+    if code ~= 0 then
+      vim.notify('Git sync failed while committing:\n' .. output, vim.log.levels.ERROR)
+      return
+    end
+  end
+
+  code, output = run_git { 'pull', '--rebase', '--autostash' }
+  if code ~= 0 then
+    vim.notify('Git sync failed while pulling:\n' .. output, vim.log.levels.ERROR)
+    return
+  end
+
+  code, output = run_git { 'push' }
+  if code ~= 0 then
+    vim.notify('Git sync failed while pushing:\n' .. output, vim.log.levels.ERROR)
+    return
+  end
+
+  if has_changes then
+    vim.notify('Obsidian Git Sync complete: committed, pulled, and pushed.', vim.log.levels.INFO)
+  else
+    vim.notify('Obsidian Git Sync complete: pulled and pushed (no local changes).', vim.log.levels.INFO)
+  end
+end
+
 return {
   {
     'epwalsh/obsidian.nvim',
@@ -77,6 +135,7 @@ return {
       { '<leader>oT', '<cmd>ObsidianTemplate<CR>', desc = 'Obsidian: Insert template' },
       { '<leader>oc', '<cmd>ObsidianToggleCheckbox<CR>', desc = 'Obsidian: Cycle checkbox state' },
       { '<leader>oO', '<cmd>ObsidianOpen<CR>', desc = 'Obsidian: Open in app' },
+      { '<leader>og', git_sync_vault, desc = 'Obsidian: Git Sync' },
       { '<leader>oW', '<cmd>ObsidianWorkspace<CR>', desc = 'Obsidian: Switch workspace' },
       { '<leader>o#', '<cmd>ObsidianTags<CR>', desc = 'Obsidian: Find tags' },
       { '<leader>oP', '<cmd>ObsidianPasteImg<CR>', desc = 'Obsidian: Paste image' },
