@@ -16,7 +16,7 @@ return {
       workspaces = {
         {
           name = 'Denkarium',
-          path = '/mnt/c/Users/e.naibauer/OneDrive/Denkarium/',
+          path = '~/denkarium',
         },
       },
       notes_subdir = '00_inbox',

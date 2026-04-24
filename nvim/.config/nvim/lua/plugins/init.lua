@@ -15,6 +15,7 @@ return {
   { import = 'plugins.blink-cmp.blink-cmp' },
   { import = 'plugins.nvim-cmp.nvim-cmp' },
   { import = 'plugins.obsidian.obsidian' },
+  { import = 'plugins.markdown-preview.markdown-preview' },
   { import = 'plugins.opencode.opencode' },
   { import = 'plugins.onedark.onedark' },
   { import = 'plugins.mini.mini' },
