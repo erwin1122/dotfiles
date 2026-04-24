@@ -1,8 +1,5 @@
 # ~/.config/fish/config.fish
 
-# PATH additions (must be outside interactive check to apply to all shells)
-fish_add_path ~/.deno/bin
-
 # Only in interactive shells
 if not status is-interactive
     return

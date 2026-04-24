@@ -68,4 +68,3 @@ function git() {
     command git "$@"
   fi
 }
-. "/home/arch/.deno/env"
