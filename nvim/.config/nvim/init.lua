@@ -29,7 +29,7 @@ vim.o.splitbelow = true
 vim.opt.conceallevel = 2
 vim.opt.concealcursor = 'nc'
 
-vim.opt.fillchars = { fold = ' ' }
+vim.opt.fillchars = { fold = ' ', eob = '~' }
 vim.opt.foldmethod = 'indent'
 vim.opt.foldenable = false
 vim.opt.foldlevel = 99
