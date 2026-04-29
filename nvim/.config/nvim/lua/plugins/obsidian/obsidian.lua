@@ -56,6 +56,54 @@ local function git_sync_vault()
   end
 end
 
+local function to_filename(name)
+  return name:lower():gsub('%s+', '-'):gsub('[^%w%-]', '')
+end
+
+local function new_note()
+  vim.ui.input({ prompt = 'Note name: ' }, function(name)
+    if not name or name == '' then return end
+    local filename = to_filename(name)
+    local path = vim.fn.expand('~/denkarium/00_inbox/') .. filename .. '.md'
+    local date = os.date '%Y-%m-%d'
+    local lines = {
+      '---',
+      'date: ' .. date,
+      'tags: []',
+      '---',
+      '',
+    }
+    vim.fn.writefile(lines, path)
+    vim.cmd('edit ' .. vim.fn.fnameescape(path))
+    vim.cmd 'normal! G'
+  end)
+end
+
+local function new_note_from_template()
+  local template_dir = vim.fn.expand '~/denkarium/templates'
+  local all_files = vim.fn.readdir(template_dir)
+  local templates = vim.tbl_filter(function(f)
+    return f:match '%.md$'
+  end, all_files)
+
+  vim.ui.select(templates, { prompt = 'Select template:' }, function(template)
+    if not template then return end
+    vim.ui.input({ prompt = 'Note name: ' }, function(name)
+      if not name or name == '' then return end
+      local filename = to_filename(name)
+      local path = vim.fn.expand('~/denkarium/00_inbox/') .. filename .. '.md'
+      local content = vim.fn.readfile(template_dir .. '/' .. template)
+      local date = os.date '%Y-%m-%d'
+      content = vim.tbl_map(function(line)
+        return line:gsub('{{date}}', date):gsub('{{title}}', name)
+      end, content)
+      vim.fn.writefile(content, path)
+      vim.cmd('edit ' .. vim.fn.fnameescape(path))
+      vim.cmd 'normal! G'
+    end)
+  end)
+end
+
 return {
   {
     'epwalsh/obsidian.nvim',
@@ -79,6 +127,12 @@ return {
       },
       notes_subdir = '00_inbox',
       new_notes_location = 'notes_subdir',
+      note_id_func = function(title)
+        if title ~= nil then
+          return title:lower():gsub('%s+', '-'):gsub('[^%w%-]', '')
+        end
+        return tostring(os.time())
+      end,
       daily_notes = {
         folder = '01_daily/2026',
         date_format = '%d_%m_%Y',
@@ -119,9 +173,28 @@ return {
       },
       disable_frontmatter = true,
     },
+    config = function(_, opts)
+      require('obsidian').setup(opts)
+
+      -- Inject frontmatter into any new markdown file created inside the vault
+      vim.api.nvim_create_autocmd('BufNewFile', {
+        pattern = vim.fn.expand '~/denkarium' .. '/**/*.md',
+        callback = function()
+          local date = os.date '%Y-%m-%d'
+          vim.api.nvim_buf_set_lines(0, 0, 0, false, {
+            '---',
+            'date: ' .. date,
+            'tags: []',
+            '---',
+            '',
+          })
+        end,
+      })
+    end,
     keys = {
       { '<leader>oo', '<cmd>ObsidianQuickSwitch<CR>', desc = 'Obsidian: Quick switch' },
-      { '<leader>on', '<cmd>ObsidianNew<CR>', desc = 'Obsidian: New note' },
+      { '<leader>on', new_note, desc = 'Obsidian: New note' },
+      { '<leader>oN', new_note_from_template, desc = 'Obsidian: New note from template' },
       { '<leader>os', '<cmd>ObsidianDailies -10 0<CR>', desc = 'Obsidian: Daily notes (last 10 days)' },
       { '<leader>oS', '<cmd>ObsidianSearch<CR>', desc = 'Obsidian: Search content' },
       { '<leader>ot', '<cmd>ObsidianToday<CR>', desc = 'Obsidian: Today' },
@@ -130,7 +203,7 @@ return {
       { '<leader>ob', '<cmd>ObsidianBacklinks<CR>', desc = 'Obsidian: Backlinks' },
       { '<leader>ol', '<cmd>ObsidianFollowLink<CR>', desc = 'Obsidian: Follow link' },
       { '<leader>oL', '<cmd>ObsidianLinks<CR>', desc = 'Obsidian: Links in current note' },
-      { '<leader>or', '<cmd>ObsidianRename --dry-run<CR>', desc = 'Obsidian: Rename (dry run)' },
+      { '<leader>or', '<cmd>ObsidianRename --dry-run<CR>', desc = 'Obsidian: Rename note (dry run)' },
       { '<leader>oR', '<cmd>ObsidianRename<CR>', desc = 'Obsidian: Rename note' },
       { '<leader>oT', '<cmd>ObsidianTemplate<CR>', desc = 'Obsidian: Insert template' },
       { '<leader>oc', '<cmd>ObsidianToggleCheckbox<CR>', desc = 'Obsidian: Cycle checkbox state' },
