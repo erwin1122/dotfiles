@@ -22,6 +22,7 @@ return {
           transparent = false,
         },
         colors = {
+          bg0 = '#13161A',
           green = '#00916C',
         },
         diagnostics = {
