@@ -184,6 +184,8 @@ vim.keymap.set('n', '<leader>wx', '<C-w>x', { desc = 'Exchange windows' })
 vim.keymap.set('n', '<leader>wt', '<C-w>t', { desc = 'Go to top-left window' })
 vim.keymap.set('n', '<leader>wb', '<C-w>b', { desc = 'Go to bottom-right window' })
 vim.keymap.set('n', '<leader>wn', '<C-w>n', { desc = 'Create new window' })
+vim.keymap.set('n', '<leader>n', '<cmd>cnext<CR>', { desc = 'Quickfix next' })
+vim.keymap.set('n', '<leader>p', '<cmd>cprevious<CR>', { desc = 'Quickfix previous' })
 pcall(vim.keymap.del, 'n', '<leader>e')
 
 vim.api.nvim_create_autocmd('TextYankPost', {
